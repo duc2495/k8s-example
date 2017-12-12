@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: survey-app
+  name: survey
   labels:
     app: survey-app
   namespace: spring-app
@@ -17,7 +17,7 @@ spec:
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
-  name: survey-app
+  name: survey
   labels:
     app: survey-app
   namespace: spring-app
@@ -32,15 +32,15 @@ spec:
         tier: frontend
     spec:
       containers:
-      - name: survey-app
+      - name: survey
         image: duc2495/surveyapp:v1.0
         ports:
         - containerPort: 8080
         resources:
           limits:
-            cpu: 200m
-            memory: 400Mi
+            cpu: 100m
+            memory: 300Mi
           requests:
-            cpu: 200m
-            memory: 400Mi
+            cpu: 100m
+            memory: 300Mi
 

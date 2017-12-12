@@ -17,6 +17,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: nfs-postgres-pvc
+  namespace: spring-app
 spec:
   accessModes:
     - ReadWriteMany
@@ -50,12 +51,22 @@ spec:
         - name: POSTGRES_USER
           value: duc2495
         - name: POSTGRES_PASSWORD
-          value: duc2495
+          valueFrom:
+            secretKeyRef:
+              name: postgres-pass
+              key: password
         - name: POSTGRES_DB
           value: hrs-training
         ports:
         - name: postgres
           containerPort: 5432
+        resources:
+          limits:
+            cpu: 50m
+            memory: 100Mi
+          requests:
+            cpu: 50m
+            memory: 100Mi
         volumeMounts:
         - name: postgres-storage
           mountPath: /var/lib/postgresql/data

@@ -1,0 +1,33 @@
+apiVersion: apps/v1beta2
+kind: StatefulSet
+metadata:
+  name: survey
+  labels:
+    app: survey-app
+  namespace: spring-app
+spec:
+  serviceName: survey
+  replicas: 2
+  selector:
+    matchLabels:
+      app: survey-app
+  template:
+    metadata:
+      labels:
+        app: survey-app
+        tier: frontend
+    spec:
+      containers:
+      - name: survey
+        image: duc2495/surveyapp:v1.2
+        ports:
+        - containerPort: 8080
+          name: survey
+        resources:
+          limits:
+            cpu: 100m
+            memory: 300Mi
+          requests:
+            cpu: 100m
+            memory: 300Mi
+

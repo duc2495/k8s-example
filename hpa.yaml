@@ -20,10 +20,6 @@ status:
   lastScaleTime: <some-time>
   currentReplicas: 2
   desiredReplicas: 2
-  conditions: 
-    - AbleToScale
-      ScalingActive
-      ScalingLimitted
   currentMetrics:
   - type: Resource
     resource:

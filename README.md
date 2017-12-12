@@ -1,55 +1,71 @@
-# Create namespaces
+# 1. Create namespaces
 
 kubectl create namespace spring-app
 
-# Create PV
+# 2. Create PV
 
 kubectl create -f nfs-postgres-pv.yaml
 
-# Create Deployment postgres database
+# 3. Create Deployment PostgreSQL database
+	3.1. Create a Secret for PostgreSQL Password
+	kubectl create -f ./password.yaml
+	3.2. Deploy PostgreSQL
+	kubectl create -f postgres-deployment.yaml
 
-kubectl create -f postgres-deployment.yaml
-
-# Create schema and tables with survey-db.sql
-	1. Access to pod postgres and login with default pass=duc2495
+# 4. Create tables with survey-db.sql
+	4.1. Access to pod postgres and login with default pass=duc2495
 	psql -d hrs-training -U duc2495 -W
-	2. Copy the contents of the file survey-db.sql to the terminal and press Enter
+	4.2. Copy the contents of the file survey-db.sql to the terminal and press Enter
 
-# Create Deployment suyver appku	
+# 5. Create Deployment survey app	
 
 kubectl create -f survey-deployment.yaml --record
 
-# Access to app with url: [IP-Node-Master]:30303/SpringMVC/
+- Access to app with url: 
 
-# Update image from duc2495/surveyapp:v1.0 to duc2495/surveyapp:v1.1
+[IP-Node-Master]:30303/SpringMVC/
 
-kubectl set image deployment/survey-app survey-app=duc2495/surveyapp:v1.1 -n spring-app
+# 6. Update image from duc2495/surveyapp:v1.0 to duc2495/surveyapp:v1.2
 
-# See rollout status 
+kubectl set image deployment/survey survey=duc2495/surveyapp:v1.2 -n spring-app
 
-kubectl rollout status deployment/survey-app -n spring-app
+- See rollout status 
 
-# See deployment 
+kubectl rollout status deployment/survey -n spring-app
+
+- See deployment 
 
 kubectl get deployment -n spring-app
 
-# Check the revisions of this deployment
+- Check the revisions of this deployment
 
-kubectl rollout history deployment/survey-app -n spring-app
+kubectl rollout history deployment/survey -n spring-app
 
-# Rollback to a specific revision by specify that in --to-revision
+# 7. Rollback to a specific revision by specify that in --to-revision
 
-kubectl rollout undo deployment/survey-app -n spring-app --to-revision=1
+kubectl rollout undo deployment/survey -n spring-app --to-revision=1
 
-# Scale Deployment survey-app from 2 to 3 replicas
+# 8. Scale Deployment survey-app with 3 replicas
 
-kubectl scale deployment survey-app --replicas=3 
+kubectl scale deployment survey --replicas=3 -n spring-app
 
-# Autoscaler choose the minimum=2 and maximum=5 of Pods, run based on the CPU utilization
+# 9. Autoscaler choose the minimum=1 and maximum=5 of Pods, run based on the CPU utilization
 
-kubectl autoscale deployment survey-app --min=2 --max=5 --cpu-percent=80 -n spring-app
+kubectl autoscale deployment survey --min=1 --max=5 --cpu-percent=60 -n spring-app
 
-while true; do curl 192.168.10.1:30303/SpringMVC/; done
+# 10. Check status of autoscaler
 
-# Check status of autoscaler
-kubectl get hpa -n spring-app 
+kubectl get hpa -n spring-app
+
+while true; do curl localhost:8080/SpringMVC/; done
+
+# 11. Pause Deployment
+
+kubectl rollout pause deployment/survey -n spring-app
+
+# 12. StatefulSet test
+kubectl apply -f survey-statefulset.yaml --record
+kubectl get statefulset survey -n spring-app
+kubectl get pods -n spring-app
+kubectl scale sts survey --replicas=3 -n spring-app
+kubectl patch sts survey -p '{"spec":{"replicas":2}}' -n spring-app
