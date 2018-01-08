@@ -1,12 +1,35 @@
-DROP TABLE IF EXISTS "customer";
+DROP TABLE IF EXISTS customer;
 
-CREATE TABLE "customer" (
-  customer_id SERIAL PRIMARY KEY,
-  name varchar(50) default NULL NOT NULL,
+CREATE TABLE customer
+(
+  customer_id SERIAL,
+  name character varying(100) NOT NULL,
   birthday date NOT NULL,
-  address varchar(100) default NULL NOT NULL,
-  gender varchar(10) default NULL NOT NULL,
-  school varchar(100) NOT NULL,
+  address character varying(100) NOT NULL,
+  gender character varying(10) NOT NULL,
+  school character varying(100) NOT NULL,
   school_year integer NOT NULL,
-  languages varchar(100) default NULL
+  CONSTRAINT customer_pkey PRIMARY KEY (customer_id)
+);
+
+DROP TABLE IF EXISTS language;
+CREATE TABLE language
+(
+  language_id SERIAL,
+  language character varying(20) NOT NULL,
+  CONSTRAINT languages_pkey PRIMARY KEY (language_id)
+);
+
+
+DROP TABLE IF EXISTS customer_language;
+CREATE TABLE customer_language
+(
+  customer_id integer,
+  language_id integer,
+  CONSTRAINT customer_language_customer_id_fkey FOREIGN KEY (customer_id)
+      REFERENCES public.customer (customer_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT customer_language_language_id_fkey FOREIGN KEY (language_id)
+      REFERENCES public.language (language_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
 );
