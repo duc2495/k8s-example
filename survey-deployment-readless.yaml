@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: survey
+  name: survey-web
   labels:
     app: survey-app
   namespace: spring-app
@@ -17,7 +17,7 @@ spec:
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
-  name: survey
+  name: survey-web
   labels:
     app: survey-app
   namespace: spring-app
@@ -32,21 +32,21 @@ spec:
         tier: frontend
     spec:
       containers:
-      - name: survey
-        image: duc2495/surveyapp:v1.4
+      - name: survey-web
+        image: duc2495/surveyapp:v1.5
         ports:
         - containerPort: 8080
         resources:
           limits:
-            cpu: 300m
-            memory: 500Mi
+            cpu: 500m
+            memory: 1Gi
           requests:
-            cpu: 300m
-            memory: 500Mi
+            cpu: 500m
+            memory: 1Gi
         readinessProbe:
           httpGet:
             host: 
             path: /SpringMVC/
             port: 8080
-          initialDelaySeconds: 15
-          timeoutSeconds: 5
+          initialDelaySeconds: 60
+          timeoutSeconds: 10

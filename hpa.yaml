@@ -1,28 +1,17 @@
 apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
 metadata:
-  name: survey-app
+  name: survey-hpa
   namespace: spring-app
 spec:
   scaleTargetRef:
     apiVersion: apps/v1beta2
     kind: Deployment
-    name: survey-app
-  minReplicas: 2
-  maxReplicas: 5
+    name: survey-web
+  minReplicas: 1
+  maxReplicas: 4
   metrics:
   - type: Resource
     resource:
       name: cpu
-      targetAverageUtilization: 50
-status:
-  observedGeneration: 1
-  lastScaleTime: <some-time>
-  currentReplicas: 2
-  desiredReplicas: 2
-  currentMetrics:
-  - type: Resource
-    resource:
-      name: cpu
-      currentAverageUtilization: 0
-      currentAverageValue: 0
+      targetAverageUtilization: 80
